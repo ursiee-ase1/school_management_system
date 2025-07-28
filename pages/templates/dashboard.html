@@ -1,0 +1,1022 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>School Management Dashboard</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: #333;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .header {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 30px;
+            margin-bottom: 30px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            color: #666;
+            font-size: 1.1rem;
+        }
+
+        .nav-tabs {
+            display: flex;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            padding: 10px;
+            margin-bottom: 30px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .nav-tab {
+            flex: 1;
+            min-width: 120px;
+            padding: 15px 20px;
+            background: transparent;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 600;
+            color: #666;
+        }
+
+        .nav-tab.active {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .nav-tab:hover {
+            transform: translateY(-1px);
+            color: #667eea;
+        }
+
+        .nav-tab.active:hover {
+            color: white;
+        }
+
+        .tab-content {
+            display: none;
+            animation: fadeIn 0.5s ease-in-out;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 25px;
+            margin-bottom: 30px;
+        }
+
+        .card {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.15);
+        }
+
+        .card-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 20px;
+        }
+
+        .card-title {
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: #333;
+        }
+
+        .card-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            color: white;
+        }
+
+        .icon-students { background: linear-gradient(135deg, #4facfe, #00f2fe); }
+        .icon-staff { background: linear-gradient(135deg, #43e97b, #38f9d7); }
+        .icon-grades { background: linear-gradient(135deg, #fa709a, #fee140); }
+        .icon-finance { background: linear-gradient(135deg, #a8edea, #fed6e3); }
+        .icon-events { background: linear-gradient(135deg, #ffecd2, #fcb69f); }
+        .icon-notifications { background: linear-gradient(135deg, #ff9a9e, #fecfef); }
+
+        .stat-number {
+            font-size: 2.5rem;
+            font-weight: 800;
+            color: #667eea;
+            margin-bottom: 10px;
+        }
+
+        .stat-label {
+            color: #666;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .form-container {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            margin-bottom: 30px;
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-bottom: 25px;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .form-group label {
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #333;
+        }
+
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            padding: 12px 15px;
+            border: 2px solid #e1e5e9;
+            border-radius: 10px;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            background: white;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .btn {
+            padding: 12px 25px;
+            border: none;
+            border-radius: 10px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 1rem;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            text-decoration: none;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn-secondary {
+            background: #f8f9fa;
+            color: #333;
+            border: 2px solid #e1e5e9;
+        }
+
+        .btn-secondary:hover {
+            background: #e9ecef;
+            transform: translateY(-1px);
+        }
+
+        .btn-danger {
+            background: #dc3545;
+            color: white;
+        }
+
+        .btn-danger:hover {
+            background: #c82333;
+            transform: translateY(-1px);
+        }
+
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+            background: white;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .data-table th {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            padding: 15px;
+            text-align: left;
+            font-weight: 600;
+        }
+
+        .data-table td {
+            padding: 15px;
+            border-bottom: 1px solid #f0f0f0;
+        }
+
+        .data-table tr:hover {
+            background: #f8f9ff;
+        }
+
+        .badge {
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .badge-success { background: #d4edda; color: #155724; }
+        .badge-warning { background: #fff3cd; color: #856404; }
+        .badge-danger { background: #f8d7da; color: #721c24; }
+        .badge-info { background: #d1ecf1; color: #0c5460; }
+
+        .search-bar {
+            position: relative;
+            margin-bottom: 20px;
+        }
+
+        .search-bar input {
+            width: 100%;
+            padding: 15px 20px 15px 50px;
+            border: 2px solid #e1e5e9;
+            border-radius: 15px;
+            font-size: 1rem;
+            background: white;
+        }
+
+        .search-bar::before {
+            content: "🔍";
+            position: absolute;
+            left: 18px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 1.2rem;
+        }
+
+        .quick-actions {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 25px;
+            flex-wrap: wrap;
+        }
+
+        .notification-item {
+            background: white;
+            padding: 20px;
+            border-radius: 15px;
+            margin-bottom: 15px;
+            border-left: 4px solid #667eea;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+            transition: all 0.3s ease;
+        }
+
+        .notification-item:hover {
+            transform: translateX(5px);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 8px;
+            background: #e9ecef;
+            border-radius: 4px;
+            overflow: hidden;
+            margin-top: 10px;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            border-radius: 4px;
+            transition: width 0.5s ease;
+        }
+
+        .messages {
+            margin-bottom: 20px;
+        }
+
+        .alert {
+            padding: 15px 20px;
+            margin-bottom: 15px;
+            border-radius: 10px;
+            font-weight: 600;
+        }
+
+        .alert-success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+
+        .alert-error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+
+        @media (max-width: 768px) {
+            .nav-tabs {
+                flex-direction: column;
+            }
+            
+            .dashboard-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .quick-actions {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>HumbleKids School Management System</h1>
+            <p>Comprehensive dashboard for managing students, staff, and school operations</p>
+        </div>
+
+        <!-- Django Messages -->
+        {% if messages %}
+        <div class="messages">
+            {% for message in messages %}
+            <div class="alert alert-{{ message.tags }}">
+                {{ message }}
+            </div>
+            {% endfor %}
+        </div>
+        {% endif %}
+
+        <div class="nav-tabs">
+            <button class="nav-tab active" onclick="showTab('dashboard')">Dashboard</button>
+            <button class="nav-tab" onclick="showTab('students')">Students</button>
+            <button class="nav-tab" onclick="showTab('staff')">Staff</button>
+            <button class="nav-tab" onclick="showTab('grades')">Grades</button>
+            <button class="nav-tab" onclick="showTab('finance')">Finance</button>
+            <button class="nav-tab" onclick="showTab('events')">Events</button>
+            <button class="nav-tab" onclick="showTab('notifications')">Notifications</button>
+        </div>
+
+        <!-- Dashboard Tab -->
+        <div id="dashboard" class="tab-content active">
+            <div class="dashboard-grid">
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-title">Total Students</div>
+                        <div class="card-icon icon-students">👥</div>
+                    </div>
+                    <div class="stat-number">{{ total_students|default:"0" }}</div>
+                    <div class="stat-label">Active Enrollments</div>
+                    <div class="progress-bar">
+                        <div class="progress-fill" style="width: 85%"></div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-title">Staff Members</div>
+                        <div class="card-icon icon-staff">👨‍🏫</div>
+                    </div>
+                    <div class="stat-number">{{ total_staff|default:"0" }}</div>
+                    <div class="stat-label">Teaching & Support</div>
+                    <div class="progress-bar">
+                        <div class="progress-fill" style="width: 92%"></div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-title">Total Grades</div>
+                        <div class="card-icon icon-grades">📚</div>
+                    </div>
+                    <div class="stat-number">{{ total_grades|default:"0" }}</div>
+                    <div class="stat-label">Active Classes</div>
+                    <div class="progress-bar">
+                        <div class="progress-fill" style="width: 100%"></div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-title">Outstanding Fees</div>
+                        <div class="card-icon icon-finance">💰</div>
+                    </div>
+                    <div class="stat-number">${{ outstanding_fees|default:"0"|floatformat:0 }}</div>
+                    <div class="stat-label">Pending Collections</div>
+                    <div class="progress-bar">
+                        <div class="progress-fill" style="width: 68%"></div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-title">Upcoming Events</div>
+                        <div class="card-icon icon-events">🎉</div>
+                    </div>
+                    <div class="stat-number">{{ upcoming_events.count|default:"0" }}</div>
+                    <div class="stat-label">This Month</div>
+                    <div class="progress-bar">
+                        <div class="progress-fill" style="width: 45%"></div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-title">New Notifications</div>
+                        <div class="card-icon icon-notifications">🔔</div>
+                    </div>
+                    <div class="stat-number">{{ new_notifications|default:"0" }}</div>
+                    <div class="stat-label">Unread Messages</div>
+                    <div class="progress-bar">
+                        <div class="progress-fill" style="width: 30%"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Students Tab -->
+        <div id="students" class="tab-content">
+            <div class="form-container">
+                <h3 style="margin-bottom: 20px; color: #333;">Add New Student</h3>
+                <form method="POST" action="{{ add_student_url }}">
+                    {% csrf_token %}
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label for="studentName">Student Name</label>
+                            <input type="text" id="studentName" name="name" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="studentGrade">Grade</label>
+                            <select id="studentGrade" name="grade" required>
+                                <option value="">Select Grade</option>
+                                {% for grade in grades %}
+                                    <option value="{{ grade.id }}">{{ grade.name }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="studentDOB">Date of Birth</label>
+                            <input type="date" id="studentDOB" name="date_of_birth">
+                        </div>
+                        <div class="form-group">
+                            <label for="feesDue">Fees Due</label>
+                            <input type="number" id="feesDue" name="fees_due" step="0.01" placeholder="0.00">
+                        </div>
+                        <div class="form-group">
+                            <label for="feesPaid">Fees Paid</label>
+                            <input type="number" id="feesPaid" name="fees_paid" step="0.01" placeholder="0.00">
+                        </div>
+                    </div>
+                    <div class="quick-actions">
+                        <button type="submit" class="btn btn-primary">➕ Add Student</button>
+                        <button type="reset" class="btn btn-secondary">🔄 Reset Form</button>
+                    </div>
+                </form>
+            </div>
+
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-title">Student Management</div>
+                </div>
+                <div class="search-bar">
+                    <form method="GET" action="{{ search_students_url }}">
+                        <input type="text" name="q" placeholder="Search students..." value="{{ search_query }}">
+                    </form>
+                </div>
+                <div class="quick-actions">
+                    <a href="{{ students_url }}" class="btn btn-secondary">All Students</a>
+                    <a href="{{ filter_students_url }}/outstanding" class="btn btn-secondary">Outstanding Fees</a>
+                    <a href="{{ filter_students_url }}/recent" class="btn btn-secondary">Recently Enrolled</a>
+                </div>
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th>Grade</th>
+                            <th>Date of Birth</th>
+                            <th>Fees Balance</th>
+                            <th>Status</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for student in students %}
+                        <tr>
+                            <td>{{ student.name }}</td>
+                            <td>{{ student.grade.name }}</td>
+                            <td>{{ student.date_of_birth|date:"Y-m-d"|default:"N/A" }}</td>
+                            <td>${{ student.balance|floatformat:2 }}</td>
+                            <td>
+                                {% if student.balance > 0 %}
+                                    <span class="badge badge-warning">Outstanding</span>
+                                {% else %}
+                                    <span class="badge badge-success">Paid</span>
+                                {% endif %}
+                            </td>
+                            <td>
+                                <a href="{{ edit_student_url }}/{{ student.id }}" class="btn btn-secondary">Edit</a>
+                                <form method="POST" action="{{ delete_student_url }}/{{ student.id }}" style="display: inline;" onsubmit="return confirm('Are you sure you want to delete this student?')">
+                                    {% csrf_token %}
+                                    <button type="submit" class="btn btn-danger">Delete</button>
+                                </form>
+                            </td>
+                        </tr>
+                        {% empty %}
+                        <tr>
+                            <td colspan="6" style="text-align: center; color: #666;">No students found.</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Staff Tab -->
+        <div id="staff" class="tab-content">
+            <div class="form-container">
+                <h3 style="margin-bottom: 20px; color: #333;">Add New Staff Member</h3>
+                <form method="POST" action="{{ add_staff_url }}">
+                    {% csrf_token %}
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label for="staffName">Staff Name</label>
+                            <input type="text" id="staffName" name="name" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="staffRole">Role</label>
+                            <select id="staffRole" name="role" required>
+                                <option value="">Select Role</option>
+                                <option value="Teacher">Teacher</option>
+                                <option value="Admin">Administrator</option>
+                                <option value="Support">Support Staff</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="dateJoined">Date Joined</label>
+                            <input type="date" id="dateJoined" name="date_joined">
+                        </div>
+                    </div>
+                    <div class="quick-actions">
+                        <button type="submit" class="btn btn-primary">➕ Add Staff</button>
+                        <button type="reset" class="btn btn-secondary">🔄 Reset Form</button>
+                    </div>
+                </form>
+            </div>
+
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-title">Staff Directory</div>
+                </div>
+                <div class="search-bar">
+                    <form method="GET" action="{{ search_staff_url }}">
+                        <input type="text" name="q" placeholder="Search staff..." value="{{ search_query }}">
+                    </form>
+                </div>
+                <div class="quick-actions">
+                    <a href="{{ staff_url }}" class="btn btn-secondary">All Staff</a>
+                    <a href="{{ filter_staff_url }}/teachers" class="btn btn-secondary">Teachers</a>
+                    <a href="{{ filter_staff_url }}/admin" class="btn btn-secondary">Administrators</a>
+                    <a href="{{ filter_staff_url }}/support" class="btn btn-secondary">Support Staff</a>
+                </div>
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th>Role</th>
+                            <th>Date Joined</th>
+                            <th>Status</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for staff_member in staff %}
+                        <tr>
+                            <td>{{ staff_member.name }}</td>
+                            <td>
+                                {% if staff_member.role == 'Teacher' %}
+                                    <span class="badge badge-info">{{ staff_member.role }}</span>
+                                {% elif staff_member.role == 'Admin' %}
+                                    <span class="badge badge-warning">{{ staff_member.role }}</span>
+                                {% else %}
+                                    <span class="badge badge-info">{{ staff_member.role }}</span>
+                                {% endif %}
+                            </td>
+                            <td>{{ staff_member.date_joined|date:"Y-m-d" }}</td>
+                            <td><span class="badge badge-success">Active</span></td>
+                            <td>
+                                <a href="{{ edit_staff_url }}/{{ staff_member.id }}" class="btn btn-secondary">Edit</a>
+                                <form method="POST" action="{{ delete_staff_url }}/{{ staff_member.id }}" style="display: inline;" onsubmit="return confirm('Are you sure you want to delete this staff member?')">
+                                    {% csrf_token %}
+                                    <button type="submit" class="btn btn-danger">Delete</button>
+                                </form>
+                            </td>
+                        </tr>
+                        {% empty %}
+                        <tr>
+                            <td colspan="5" style="text-align: center; color: #666;">No staff members found.</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Grades Tab -->
+        <div id="grades" class="tab-content">
+            <div class="form-container">
+                <h3 style="margin-bottom: 20px; color: #333;">Add New Grade</h3>
+                <form method="POST" action="{{ add_grade_url }}">
+                    {% csrf_token %}
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label for="gradeName">Grade Name</label>
+                            <input type="text" id="gradeName" name="name" placeholder="e.g., Grade 10, Kindergarten" required>
+                        </div>
+                    </div>
+                    <div class="quick-actions">
+                        <button type="submit" class="btn btn-primary">➕ Add Grade</button>
+                        <button type="reset" class="btn btn-secondary">🔄 Reset Form</button>
+                    </div>
+                </form>
+            </div>
+
+            <div class="dashboard-grid">
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-title">Grade Overview</div>
+                    </div>
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Grade</th>
+                                <th>Students</th>
+                                <th>Teachers</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for grade_stat in grade_stats %}
+                            <tr>
+                                <td>{{ grade_stat.grade.name }}</td>
+                                <td>{{ grade_stat.student_count }}</td>
+                                <td>{{ grade_stat.teacher_count }}</td>
+                                <td>
+                                    <a href="{{ grade_details_url }}/{{ grade_stat.grade.id }}" class="btn btn-secondary">View</a>
+                                    <a href="{{ edit_grade_url }}/{{ grade_stat.grade.id }}" class="btn btn-secondary">Edit</a>
+                                    <form method="POST" action="{{ delete_grade_url }}/{{ grade_stat.grade.id }}" style="display: inline;" onsubmit="return confirm('Are you sure you want to delete this grade?')">
+                                        {% csrf_token %}
+                                        <button type="submit" class="btn btn-danger">Delete</button>
+                                    </form>
+                                </td>
+                            </tr>
+                            {% empty %}
+                            <tr>
+                                <td colspan="4" style="text-align: center; color: #666;">No grades found.</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- Finance Tab -->
+        <div id="finance" class="tab-content">
+            <div class="dashboard-grid">
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-title">Fee Collection Overview</div>
+                    </div>
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 20px;">
+                        <div>
+                            <div class="stat-number" style="font-size: 1.8rem;">${{ total_fees_due|default:"0"|floatformat:0 }}</div>
+                            <div class="stat-label">Total Fees Due</div>
+                        </div>
+                        <div>
+                            <div class="stat-number" style="font-size: 1.8rem; color: #28a745;">${{ total_fees_paid|default:"0"|floatformat:0 }}</div>
+                            <div class="stat-label">Fees Collected</div>
+                        </div>
+                    </div>
+                    <div class="progress-bar">
+                        {% widthratio total_fees_paid total_fees_due 100 as collection_percentage %}
+                        <!--<div class="progress-fill" style="width: {{ collection_percentage|default:0 }}%"></div>-->
+                    </div>
+                    <p style="margin-top: 10px; color: #666; font-size: 0.9rem;">{{ collection_percentage|default:0 }}% collection rate this term</p>
+                </div>
+
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-title">Outstanding Fees by Grade</div>
+                    </div>
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Grade</th>
+                                <th>Outstanding</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for grade, outstanding in grade_stats.items %}
+                            <tr>
+                                <td>{{ grade }}</td>
+                                <td>${{ outstanding|floatformat:0 }}</td>
+                                <td>
+                                    {% if outstanding > 5000 %}
+                                        <span class="badge badge-danger">High</span>
+                                    {% elif outstanding > 2000 %}
+                                        <span class="badge badge-warning">Medium</span>
+                                    {% else %}
+                                        <span class="badge badge-info">Low</span>
+                                    {% endif %}
+                                </td>
+                            </tr>
+                            {% empty %}
+                            <tr>
+                                <td colspan="3" style="text-align: center; color: #666;">No outstanding fees data.</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- Events Tab -->
+        <div id="events" class="tab-content">
+            <div class="form-container">
+                <h3 style="margin-bottom: 20px; color: #333;">Add New Event</h3>
+                <form method="POST" action="{{ add_event_url }}">
+                    {% csrf_token %}
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label for="eventTitle">Event Title</label>
+                            <input type="text" id="eventTitle" name="title" required>
+                        </div>
+                    </div>
+                    <div class="quick-actions">
+                        <button type="submit" class="btn btn-primary">➕ Add Event</button>
+                        <button type="reset" class="btn btn-secondary">🔄 Reset Form</button>
+                    </div>
+                </form>
+            </div>
+
+            <div class="dashboard-grid">
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-title">Upcoming Events</div>
+                    </div>
+                    {% for event in events %}
+                    <div class="notification-item">
+                        <h4 style="margin-bottom: 10px; color: #333;">{{ event.title }}</h4>
+                        <p style="color: #666; margin-bottom: 5px;">{{ event.description|default:"Event details coming soon..." }}</p>
+                        <small style="color: #999;">{{ event.date|date:"F d, Y"|default:"Date TBD" }}</small>
+                        <div style="margin-top: 10px;">
+                            <a href="{{ edit_event_url }}/{{ event.id }}" class="btn btn-secondary" style="font-size: 0.8rem; padding: 5px 10px;">Edit</a>
+                            <form method="POST" action="{{ delete_event_url }}/{{ event.id }}" style="display: inline;" onsubmit="return confirm('Are you sure you want to delete this event?')">
+                                {% csrf_token %}
+                                <button type="submit" class="btn btn-danger" style="font-size: 0.8rem; padding: 5px 10px;">Delete</button>
+                            </form>
+                        </div>
+                    </div>
+                    {% empty %}
+                    <div class="notification-item">
+                        <h4 style="margin-bottom: 10px; color: #333;">No Events Scheduled</h4>
+                        <p style="color: #666;">Add your first event using the form above.</p>
+                    </div>
+                    {% endfor %}
+                </div>
+
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-title">Activities</div>
+                    </div>
+                    <div class="form-container" style="margin: 0; padding: 20px;">
+                        <form method="POST" action="{{ add_activity_url }}">
+                            {% csrf_token %}
+                            <div class="form-group">
+                                <label for="activityTitle">Activity Title</label>
+                                <input type="text" id="activityTitle" name="title" placeholder="Enter activity name" required>
+                            </div>
+                            <button type="submit" class="btn btn-primary" style="margin-top: 15px;">➕ Add Activity</button>
+                        </form>
+                    </div>
+                    <div style="margin-top: 20px;">
+                        {% for activity in activities %}
+                        <div class="notification-item">
+                            <h4 style="margin-bottom: 10px; color: #333;">{{ activity.title }}</h4>
+                            <p style="color: #666;">{{ activity.description|default:"Activity details coming soon..." }}</p>
+                            <div style="margin-top: 10px;">
+                                <a href="{{ edit_activity_url }}/{{ activity.id }}" class="btn btn-secondary" style="font-size: 0.8rem; padding: 5px 10px;">Edit</a>
+                                <form method="POST" action="{{ delete_activity_url }}/{{ activity.id }}" style="display: inline;" onsubmit="return confirm('Are you sure you want to delete this activity?')">
+                                    {% csrf_token %}
+                                    <button type="submit" class="btn btn-danger" style="font-size: 0.8rem; padding: 5px 10px;">Delete</button>
+                                </form>
+                            </div>
+                        </div>
+                        {% empty %}
+                        <div class="notification-item">
+                            <h4 style="margin-bottom: 10px; color: #333;">No Activities</h4>
+                            <p style="color: #666;">Add your first activity using the form above.</p>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Notifications Tab -->
+        <div id="notifications" class="tab-content">
+            <div class="form-container">
+                <h3 style="margin-bottom: 20px; color: #333;">Send New Notification</h3>
+                <form method="POST" action="{{ add_notification_url }}">
+                    {% csrf_token %}
+                    <div class="form-group">
+                        <label for="notificationMessage">Message</label>
+                        <textarea id="notificationMessage" name="message" rows="4" placeholder="Enter notification message..." required></textarea>
+                    </div>
+                    <div class="quick-actions">
+                        <button type="submit" class="btn btn-primary">📢 Send Notification</button>
+                        <button type="reset" class="btn btn-secondary">🔄 Clear</button>
+                    </div>
+                </form>
+            </div>
+
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-title">Recent Notifications</div>
+                </div>
+                {% for notification in notifications %}
+                <div class="notification-item">
+                    <h4 style="margin-bottom: 10px; color: #333;">{{ notification.title|default:"Announcement" }}</h4>
+                    <p style="color: #666; margin-bottom: 10px;">{{ notification.message }}</p>
+                    <small style="color: #999;">Posted: {{ notification.date|date:"F d, Y" }}</small>
+                    <div style="margin-top: 10px;">
+                        <form method="POST" action="{{ delete_notification_url }}/{{ notification.id }}" style="display: inline;" onsubmit="return confirm('Are you sure you want to delete this notification?')">
+                            {% csrf_token %}
+                            <button type="submit" class="btn btn-danger" style="font-size: 0.8rem; padding: 5px 10px;">Delete</button>
+                        </form>
+                    </div>
+                </div>
+                {% empty %}
+                <div class="notification-item">
+                    <h4 style="margin-bottom: 10px; color: #333;">No Notifications</h4>
+                    <p style="color: #666;">Send your first notification using the form above.</p>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Tab switching functionality
+        function showTab(tabName) {
+            // Hide all tab contents
+            const tabs = document.querySelectorAll('.tab-content');
+            tabs.forEach(tab => tab.classList.remove('active'));
+            
+            // Remove active class from all nav tabs
+            const navTabs = document.querySelectorAll('.nav-tab');
+            navTabs.forEach(tab => tab.classList.remove('active'));
+            
+            // Show selected tab and mark nav tab as active
+            document.getElementById(tabName).classList.add('active');
+            event.target.classList.add('active');
+        }
+
+        // Initialize dashboard effects
+        document.addEventListener('DOMContentLoaded', function() {
+            // Animate progress bars on load
+            const progressBars = document.querySelectorAll('.progress-fill');
+            progressBars.forEach(bar => {
+                const width = bar.style.width;
+                bar.style.width = '0%';
+                setTimeout(() => {
+                    bar.style.width = width;
+                }, 500);
+            });
+            
+            // Add hover effects to cards
+            const cards = document.querySelectorAll('.card');
+            cards.forEach(card => {
+                card.addEventListener('mouseenter', function() {
+                    this.style.transform = 'translateY(-5px)';
+                });
+                card.addEventListener('mouseleave', function() {
+                    this.style.transform = 'translateY(0)';
+                });
+            });
+
+            // Auto-hide messages after 5 seconds
+            const messages = document.querySelectorAll('.alert');
+            messages.forEach(message => {
+                setTimeout(() => {
+                    message.style.opacity = '0';
+                    setTimeout(() => {
+                        message.remove();
+                    }, 300);
+                }, 5000);
+            });
+        });
+
+        // Form validation and enhancement
+        document.querySelectorAll('form').forEach(form => {
+            form.addEventListener('submit', function(e) {
+                const submitBtn = this.querySelector('button[type="submit"]');
+                if (submitBtn) {
+                    submitBtn.disabled = true;
+                    submitBtn.innerHTML = submitBtn.innerHTML.replace('➕', '⏳');
+                    setTimeout(() => {
+                        submitBtn.disabled = false;
+                        submitBtn.innerHTML = submitBtn.innerHTML.replace('⏳', '➕');
+                    }, 2000);
+                }
+            });
+        });
+
+        // Search functionality enhancement
+        document.querySelectorAll('.search-bar input').forEach(input => {
+            input.addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    this.closest('form').submit();
+                }
+            });
+        });
+    </script>
+</body>
+</html>
