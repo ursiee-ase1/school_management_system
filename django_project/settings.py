@@ -90,7 +90,7 @@ if 'RENDER' in os.environ:
         }
     }
 else:
-DATABASES = {
+    DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.mysql",
         "NAME": "humblekids_school_management_system",
