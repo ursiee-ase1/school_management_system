@@ -81,7 +81,15 @@ WSGI_APPLICATION = "django_project.wsgi.application"
 
 # Database
 # https://docs.djangoproject.com/en/5.2/ref/settings/#databases
-
+if 'RENDER' in os.environ:
+    # Production - use SQLite (for demo purposes)
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': ':memory:',  # In-memory database
+        }
+    }
+else:
 DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.mysql",
