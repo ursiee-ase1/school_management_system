@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/5.2/ref/settings/
 """
 
 from pathlib import Path
+import os
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -25,8 +26,14 @@ SECRET_KEY = "django-insecure-!v0q9e6h(i0#dkkh2tvh^oq-jg#-wp+hym$%v5f=r*@@_#(cq6
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
-
+ALLOWED_HOSTS = ["school-management-system-1-jtvt.onrender.com", "localhost", "127.0.0.1"]
+#Dyanamic
+if 'RENDER' in os.environ:
+    ALLOWED_HOSTS = [
+        'school-management-system-1-jtvt.onrender.com',
+    ]
+else:
+    ALLOWED_HOSTS = ['localhost', '127.0.0.1']
 
 # Application definition
 
