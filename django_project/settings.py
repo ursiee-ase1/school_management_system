@@ -30,7 +30,7 @@ ALLOWED_HOSTS = ["school-management-system-1-jtvt.onrender.com", "localhost", "1
 #Dyanamic
 if 'RENDER' in os.environ:
     ALLOWED_HOSTS = [
-        'school-management-system-1-jtvt.onrender.com',
+        'school-management-system-9zwz.onrender.com',
     ]
 else:
     ALLOWED_HOSTS = ['localhost', '127.0.0.1']
